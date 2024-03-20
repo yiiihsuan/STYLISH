@@ -8,6 +8,3 @@ export async function fetchOrderData() {
     return response.json();
   }
 
-  //process.env.API_URL ||
-  //   const apiUrl = 'https://18.235.176.70/api/1.0/data';
-  // 'http://localhost:3000/api/1.0/data'
