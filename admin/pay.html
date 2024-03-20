@@ -188,17 +188,14 @@
 
         $('form').on('submit', function (event) {
             event.preventDefault()
-
-            // const accessToken = document.getElementById('accessTokenField').value;
-            // localStorage.setItem('accessToken', accessToken);
-            
+           
             // fix keyboard issue in iOS device
             forceBlurIos()
             
             const tappayStatus = TPDirect.card.getTappayFieldsStatus()
             console.log(tappayStatus)
 
-            // Check TPDirect.card.getTappayFieldsStatus().canGetPrime before TPDirect.card.getPrime
+            
             if (tappayStatus.canGetPrime === false) {
                 alert('can not get prime')
                 return
@@ -269,14 +266,6 @@
             return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
         }
    
-
-                // "order": {
-            //     "shipping": "delivery",
-            //     "payment": "credit_card",
-            //     // ... (添加其他詳情，如小計，運費，總計，收件人，列表等)
-            // }
-
-
     function checkoutOrder(prime) {
         var orderDetails = {
             "prime": prime,
@@ -310,16 +299,12 @@
 
         };
 
-       // const accessToken = localStorage.getItem('accessToken');
-
         const accessToken = document.getElementById('accessTokenField').value;
 
         fetch('/api/1.0/order/checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                // 'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicHJvdmlkZXIiOiJuYXRpdmUiLCJuYW1lIjoidGVzdCIsImVtYWlsIjoidGVzdEB0ZXN0LmNvbSIsInBpY3R1cmUiOm51bGwsImlhdCI6MTY5ODk5OTkwOH0.FIqg7HfC00Npj0PBgTneTkFRGRnL7YOt443njKfj454'},
-                //'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MTQsInByb3ZpZGVyIjoibmF0aXZlIiwibmFtZSI6InRlc3QiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJwaWN0dXJlIjpudWxsLCJpYXQiOjE2OTkwMDE5MDd9.VYn0W0EP1dE0ug3j1d0SHrnMbeABo-RMedW4SGYV3k0'},
                 'Authorization': `Bearer ${accessToken}`},
                 body: JSON.stringify(orderDetails)
         })
