@@ -1,3 +1,4 @@
+/* global TPDirect */
 import React, { useState, useEffect, useRef } from 'react';
 import { useCart } from '../components/CartContext';
 import styled from 'styled-components';
