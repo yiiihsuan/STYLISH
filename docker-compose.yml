@@ -1,0 +1,45 @@
+version: "3.9"
+services:
+  nginx:
+    container_name: stylish_nginx
+    image: nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "80:80"
+    networks:
+      - stylish_network
+    depends_on:
+      - server
+
+  redis:
+    container_name: stylish_redis
+    image: redis
+    networks:
+      - stylish_network
+
+  server:
+    container_name: stylish_server
+    build:
+      context: .          
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - stylish_network
+    depends_on:
+      - redis
+
+  frontend:
+    container_name: stylish_frontend
+    build:
+      context: ./frontend 
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    networks:
+      - stylish_network
+
+networks:
+  stylish_network:
+    driver: bridge

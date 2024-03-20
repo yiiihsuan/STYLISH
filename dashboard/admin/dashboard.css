@@ -1,0 +1,43 @@
+
+
+
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+}
+
+
+#Dashboard {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    grid-gap: 10px;                
+    width: 100%;
+    height: 100%;
+}
+
+
+#total-revenue {
+    grid-column: 1 / 2; 
+    grid-row: 1 / 2;    
+    font-size: 6vw; 
+    
+
+}
+
+#PieChart {
+    grid-column: 2 / 3; 
+    grid-row: 1 / 2; 
+    width: 100%;
+    height: 100%;
+}
+
+#Histogram {
+    grid-column: 1 / 2; 
+    grid-row: 2 / 3;    
+}
+
+#StackedBarChart {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;    
+}

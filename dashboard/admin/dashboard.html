@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="dashboard.css">
+    <!-- 引入Plotly.js -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+
+</head>
+<body>
+       <!-- dashboard -->
+       <h1>Welcome to Dashboard!</h1>
+
+    <div id="Dashboard">
+        <div id="total-revenue"></div>
+        <div id="PieChart"></div>
+        <div id="Histogram"></div>
+        <div id="StackedBarChart"></div>
+    </div>
+
+    <script type="module" src="dashboard.js"></script>
+    <script>
+        const socket = io(); 
+        socket.on('update-dashboard', (data) => {
+          location.reload(); 
+        });
+      </script>
+
+</body>
+</html>
+
+

@@ -1,0 +1,1401 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "Your API",
+      "description": "API description goes here",
+      "contact": {
+        "name": "Hsuan",
+        "email": "Hsuan@example.com"
+      }
+    },
+    "basePath": "/api/1.0", 
+    "schemes": ["http"], 
+    "paths": {
+      "/createProduct": {
+        "post": {
+          "summary": "Create a new product",
+          "description": "Create a new product with main_image and images.",
+          "consumes": ["multipart/form-data"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "main_image",
+              "in": "formData",
+              "type": "file",
+              "description": "Main product image",
+              "required": true
+        },
+        {
+            "name": "image",
+            "in": "formData",
+            "type": "array",
+            "items": {
+                "type": "file"
+            },
+            "description": "Additional product images",
+            "required": false
+            },
+            {
+                "name": "data",
+                "in": "formData",
+                "type": "string",
+                "description": "Product",
+                "required": false,
+                "default": "{\"id\": 1234, \"category\": \"men\", \"title\": \"厚實毛呢格子外套\", \"description\": \"高抗寒素材選用，保暖也時尚有型\", \"price\": 2200, \"texture\": \"棉、聚脂纖維\", \"wash\": \"手洗（水溫40度\", \"place\": \"韓國\", \"note\": \"實品顏色以單品照為主\", \"story\": \"你絕對不能錯過的超值商品\", \"colors\": [{ \"code\":\"334455\", \"name\":\"深藍\" }], \"sizes\": [\"S\", \"M\", \"L\"], \"variants\": [{ \"color_code\":\"334455\", \"size\":\"S\", \"stock\":5 }, { \"color_code\":\"334455\", \"size\":\"M\", \"stock\":10 }, { \"color_code\":\"334455\", \"size\":\"L\", \"stock\":0 } ]}"
+              }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product created successfully",
+              "schema": {
+                "$ref": "#/definitions/Product"
+              }
+            },
+            "400": {
+              "description": "Bad request"
+            },
+            "500": {
+              "description": "Internal Server error"
+            }
+          }
+        }
+      },
+      "/products/details": {
+        "get": {
+          "summary": "Product Details API",
+          "description": "Get details of a specific product.",
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "id",
+              "in": "query",
+              "description": "Product Id",
+              "required": true,
+              "type": "integer",
+              "default":20
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/ProductDetailsResponse"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ClientErrorResponse"
+              }
+            },
+            "500": {
+              "description": "Internal Server error",
+              "schema": {
+                "$ref": "#/definitions/ServerErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/products/search": {
+        "get": {
+          "summary": "Product Search API",
+          "description": "Search for products based on certain criteria.",
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "keyword",
+              "in": "query",
+              "description": "The search keyword",
+              "required": true,
+              "type": "string",
+              "default":"洋裝"
+            },
+            {
+              "name": "paging",
+              "in": "query",
+              "description": "Page number for pagination (optional)",
+              "required": false,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Product search",
+              "schema": {
+                "$ref": "#/definitions/ProductSearchResponse"
+              }
+            },
+            "400": {
+              "description": "Bad request",
+              "schema": {
+                "$ref": "#/definitions/ClientErrorResponse"
+              }
+            },
+            "500": {
+              "description": "Internal Server error",
+              "schema": {
+                "$ref": "#/definitions/ServerErrorResponse"
+              }
+            }
+          }
+        }
+      },
+      "/products/{category}": {
+        "get": {
+          "summary": "Get product list by category",
+          "description": "Get a list of products by category.",
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "name": "category",
+              "in": "path",
+              "description": "Product category",
+              "required": true,
+              "type": "string",
+              "enum": ["all", "men", "women", "accessories"],
+              "default": "all"
+            },
+            {
+              "name": "paging",
+              "in": "query",
+              "description": "Page number for pagination (optional)",
+              "required": false,
+              "type": "integer"
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/Productget"
+              }
+            },
+            "400": {
+              "description": "Bad request"
+            },
+            "500": {
+              "description": "Internal Server error"
+            }
+          }
+        }
+      },
+      "/user/signup": {
+        "post": {
+          "summary": "User Sign Up",
+          "description": "Create a new user account",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": { "type": "string" },
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                },
+                "required": ["name", "email", "password"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SignUpResponse"
+              }
+            },
+            "400": { "description": "Client Error" },
+            "409": { "description": "Email Already Exists" },
+            "500": { "description": "Server Error" }
+          }
+        }
+      },
+      "/user/signin": {
+        "post": {
+          "summary": "User Sign In",
+          "description": "Sign in a user",
+          "consumes": ["application/json"],
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/SignInBody"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/SuccessResponse"
+              }
+            },
+            "400": { "description": "Client Error" },
+            "403": { "description": "Sign In Failed" },
+            "500": { "description": "Server Error" }
+          }
+        }
+      },
+      "/user/profile": {
+        "get": {
+          "summary": "Get User Profile",
+          "description": "Retrieve the user’s profile information",
+          "produces": ["application/json"],
+          "parameters": [
+            {
+              "in": "header",
+              "name": "Authorization",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Success",
+              "schema": {
+                "$ref": "#/definitions/UserProfileResponse"
+              }
+            },
+            "401": { "description": "Client Error (No token)" },
+            "403": { "description": "Client Error (Wrong token)" },
+            "500": { "description": "Server Error" }
+          }
+        }
+      }
+    },
+    "definitions": {
+      
+      "Product": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "category": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "texture": {
+                "type": "string"
+              },
+              "wash": {
+                "type": "string"
+              },
+              "place": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              },
+              "story": {
+                "type": "string"
+              },
+              "colors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "sizes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "color_code": {
+                      "type": "string"
+                    },
+                    "size": {
+                      "type": "string"
+                    },
+                    "stock": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "main_image_URL": {
+            "type": "string"
+          },
+          "images_URL": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+
+        "example": {
+          "id": 1234,
+          "category": "men",
+          "title": "厚實毛呢格子外套",
+          "description": "高抗寒素材選用，保暖也時尚有型",
+          "price": 2200,
+          "texture": "棉、聚脂纖維",
+          "wash": "手洗（水溫40度",
+          "place": "韓國",
+          "note": "實品顏色以單品照為主",
+          "story": "你絕對不能錯過的超值商品",
+          "colors": [
+            {
+              "code":"334455",
+              "name":"深藍"
+            }
+          ],
+          "sizes": ["S", "M", "L"],
+          "variants":[
+            {
+              "color_code":"334455",
+              "size":"S",
+              "stock":5
+            },
+            {
+              "color_code":"334455",
+              "size":"M",
+              "stock":10
+            },
+            {
+              "color_code":"334455",
+              "size":"L",
+              "stock":0
+            }
+          ]
+      }
+      
+
+      },
+
+      "Productget": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "integer"
+              },
+              "category": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "texture": {
+                "type": "string"
+              },
+              "wash": {
+                "type": "string"
+              },
+              "place": {
+                "type": "string"
+              },
+              "note": {
+                "type": "string"
+              },
+              "story": {
+                "type": "string"
+              },
+              "colors": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "sizes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "color_code": {
+                      "type": "string"
+                    },
+                    "size": {
+                      "type": "string"
+                    },
+                    "stock": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "main_image_URL": {
+            "type": "string"
+          },
+          "images_URL": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+
+        "example": {
+
+            "data": [
+                {
+                    "id": 100,
+                    "category": "accessories",
+                    "title": "經典垂墜珍珠耳環",
+                    "description": "氣質",
+                    "price": 1500,
+                    "texture": "純銀",
+                    "wash": "回店保養",
+                    "place": "日本",
+                    "note": "參考圖片",
+                    "story": "經典不敗",
+                    "colors": [
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [],
+                    "variants": [],
+                    "main_image": "http://18.235.176.70/static/uploads/6_main.jpg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/6_1.jpg",
+                        "http://18.235.176.70/static/uploads/6_2.jpg"
+                    ]
+                },
+                {
+                    "id": 98,
+                    "category": "women",
+                    "title": "日系氣質洋裝7",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "L",
+                        "XL",
+                        "S",
+                        "XL",
+                        "L",
+                        "M",
+                        "S",
+                        "S"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_2.jpeg",
+                        "http://18.235.176.70/static/uploads/3_1.jpeg"
+                    ]
+                },
+                {
+                    "id": 97,
+                    "category": "women",
+                    "title": "日系氣質洋裝6",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "M",
+                        "S",
+                        "L",
+                        "L",
+                        "S",
+                        "XL",
+                        "XL",
+                        "S"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_2.jpeg",
+                        "http://18.235.176.70/static/uploads/3_1.jpeg"
+                    ]
+                },
+                {
+                    "id": 96,
+                    "category": "women",
+                    "title": "日系氣質洋裝5",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "L",
+                        "L",
+                        "XL",
+                        "S",
+                        "S",
+                        "S",
+                        "M",
+                        "XL"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_2.jpeg",
+                        "http://18.235.176.70/static/uploads/3_1.jpeg"
+                    ]
+                },
+                {
+                    "id": 95,
+                    "category": "women",
+                    "title": "日系氣質洋裝4",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "S",
+                        "XL",
+                        "M",
+                        "L",
+                        "S",
+                        "L",
+                        "S",
+                        "XL"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_1.jpeg",
+                        "http://18.235.176.70/static/uploads/3_2.jpeg"
+                    ]
+                },
+                {
+                    "id": 94,
+                    "category": "women",
+                    "title": "日系氣質洋裝1",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "S",
+                        "S",
+                        "XL",
+                        "S",
+                        "L",
+                        "L",
+                        "XL",
+                        "M"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_2.jpeg",
+                        "http://18.235.176.70/static/uploads/3_1.jpeg"
+                    ]
+                },
+                {
+                    "id": 93,
+                    "category": "women",
+                    "title": "日系氣質洋裝1",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "L",
+                        "M",
+                        "S",
+                        "S",
+                        "XL",
+                        "XL",
+                        "L",
+                        "S"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_1.jpeg",
+                        "http://18.235.176.70/static/uploads/3_2.jpeg"
+                    ]
+                },
+                {
+                    "id": 92,
+                    "category": "women",
+                    "title": "日系氣質洋裝",
+                    "description": "甜美",
+                    "price": 600,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "參考圖片 有大尺碼",
+                    "story": "流行款",
+                    "colors": [
+                        {
+                            "code": "112233",
+                            "name": "淺粉"
+                        },
+                        {
+                            "code": "FFFFFF",
+                            "name": "優雅白"
+                        }
+                    ],
+                    "sizes": [
+                        "XL",
+                        "L",
+                        "L",
+                        "M",
+                        "S",
+                        "S",
+                        "S",
+                        "XL"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "112233",
+                            "size": "XL",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "112233",
+                            "size": "L",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "M",
+                            "stock": 10
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "L",
+                            "stock": 12
+                        },
+                        {
+                            "color_code": "FFFFFF",
+                            "size": "XL",
+                            "stock": 1
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/3_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/3_main.jpeg",
+                        "http://18.235.176.70/static/uploads/3_2.jpeg",
+                        "http://18.235.176.70/static/uploads/3_1.jpeg"
+                    ]
+                },
+                {
+                    "id": 91,
+                    "category": "women",
+                    "title": "度假風連身洋裝",
+                    "description": "日系",
+                    "price": 800,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "中國",
+                    "note": "實品顏色以單品照為主",
+                    "story": "必買",
+                    "colors": [
+                        {
+                            "code": "334455",
+                            "name": "深藍"
+                        }
+                    ],
+                    "sizes": [
+                        "M",
+                        "S",
+                        "S",
+                        "M"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "334455",
+                            "size": "M",
+                            "stock": 3
+                        },
+                        {
+                            "color_code": "334455",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "334455",
+                            "size": "S",
+                            "stock": 7
+                        },
+                        {
+                            "color_code": "334455",
+                            "size": "M",
+                            "stock": 10
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/2_main.jpeg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/2_2.jpeg",
+                        "http://18.235.176.70/static/uploads/2_3.jpeg",
+                        "http://18.235.176.70/static/uploads/2_1.jpeg"
+                    ]
+                },
+                {
+                    "id": 90,
+                    "category": "men",
+                    "title": "厚實毛呢格子外套",
+                    "description": "高抗寒素材選用，保暖也時尚有型",
+                    "price": 2200,
+                    "texture": "棉、聚脂纖維",
+                    "wash": "手洗（水溫40度",
+                    "place": "韓國",
+                    "note": "實品顏色以單品照為主",
+                    "story": "你絕對不能錯過的超值商品",
+                    "colors": [
+                        {
+                            "code": "334455",
+                            "name": "深藍"
+                        }
+                    ],
+                    "sizes": [
+                        "S",
+                        "M",
+                        "L"
+                    ],
+                    "variants": [
+                        {
+                            "color_code": "334455",
+                            "size": "S",
+                            "stock": 5
+                        },
+                        {
+                            "color_code": "334455",
+                            "size": "M",
+                            "stock": 10
+                        },
+                        {
+                            "color_code": "334455",
+                            "size": "L",
+                            "stock": 0
+                        }
+                    ],
+                    "main_image": "http://18.235.176.70/static/uploads/1_main.jpg",
+                    "images": [
+                        "http://18.235.176.70/static/uploads/1_1.jpg"
+                    ]
+                }
+            ],
+            "next_paging": 1
+        }
+ 
+      },
+
+      "ProductSearchResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array"
+          },
+          "next_paging": {
+            "type": "integer"
+          }
+        },
+        "example": {
+          "data": [
+            {
+                "id": 11,
+                "category": "men",
+                "title": "厚實毛呢格子外套3",
+                "description": "高抗寒素材選用，保暖也時尚有型",
+                "price": 2200,
+                "texture": "棉、聚脂纖維",
+                "wash": "手洗（水溫40度",
+                "place": "韓國",
+                "note": "實品顏色以單品照為主",
+                "story": "你絕對不能錯過的超值商品",
+                "colors": [
+                    {
+                        "code": "334455",
+                        "name": "深藍"
+                    }
+                ],
+                "sizes": [
+                    "S",
+                    "M",
+                    "L"
+                ],
+                "variants": [
+                    {
+                        "color_code": "334455",
+                        "size": "S",
+                        "stock": 5
+                    },
+                    {
+                        "color_code": "334455",
+                        "size": "M",
+                        "stock": 10
+                    },
+                    {
+                        "color_code": "334455",
+                        "size": "L",
+                        "stock": 0
+                    }
+                ],
+                "main_image": "http://18.235.176.70/static/uploads/1_main.jpg",
+                "images": [
+                    "http://18.235.176.70/static/uploads/1_1.jpg"
+                ]
+            },
+            {
+                "id": 10,
+                "category": "men",
+                "title": "厚實毛呢格子外套2",
+                "description": "高抗寒素材選用，保暖也時尚有型",
+                "price": 2200,
+                "texture": "棉、聚脂纖維",
+                "wash": "手洗（水溫40度",
+                "place": "韓國",
+                "note": "實品顏色以單品照為主",
+                "story": "你絕對不能錯過的超值商品",
+                "colors": [
+                    {
+                        "code": "334455",
+                        "name": "深藍"
+                    }
+                ],
+                "sizes": [
+                    "S",
+                    "M",
+                    "L"
+                ],
+                "variants": [
+                    {
+                        "color_code": "334455",
+                        "size": "S",
+                        "stock": 5
+                    },
+                    {
+                        "color_code": "334455",
+                        "size": "M",
+                        "stock": 10
+                    },
+                    {
+                        "color_code": "334455",
+                        "size": "L",
+                        "stock": 0
+                    }
+                ],
+                "main_image": "http://18.235.176.70/static/uploads/1_main.jpg",
+                "images": [
+                    "http://18.235.176.70/static/uploads/1_1.jpg"
+                ]
+            },
+            {
+                "id": 9,
+                "category": "men",
+                "title": "厚實毛呢格子外套",
+                "description": "高抗寒素材選用，保暖也時尚有型",
+                "price": 2200,
+                "texture": "棉、聚脂纖維",
+                "wash": "手洗（水溫40度",
+                "place": "韓國",
+                "note": "實品顏色以單品照為主",
+                "story": "你絕對不能錯過的超值商品",
+                "colors": [
+                    {
+                        "code": "334455",
+                        "name": "深藍"
+                    }
+                ],
+                "sizes": [
+                    "S",
+                    "M",
+                    "L"
+                ],
+                "variants": [
+                    {
+                        "color_code": "334455",
+                        "size": "S",
+                        "stock": 5
+                    },
+                    {
+                        "color_code": "334455",
+                        "size": "M",
+                        "stock": 10
+                    },
+                    {
+                        "color_code": "334455",
+                        "size": "L",
+                        "stock": 0
+                    }
+                ],
+                "main_image": "http://18.235.176.70/static/uploads/1_main.jpg",
+                "images": [
+                    "http://18.235.176.70/static/uploads/1_1.jpg"
+                ]
+            }
+        ]
+
+        }
+      },
+
+      "ProductDetailsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/definitions/Product"
+          }
+        }
+      },
+      "SignUpResponse":{
+        "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/UserData"
+        }
+      }
+      },
+      "SignInBody": {
+        "type": "object",
+        "properties": {
+          "provider": { "type": "string" },
+          "email": { "type": "string" },
+          "password": { "type": "string" },
+          "access_token": { "type": "string" }
+        },
+        "required": ["provider"]
+      },
+      "UserData": {
+        "type": "object",
+        "properties": {
+          "access_token": { "type": "string" },
+          "access_expired": { "type": "integer" },
+          "user": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "provider": { "type": "string" },
+          "name": { "type": "string" },
+          "email": { "type": "string" },
+          "picture": { "type": "string" }
+        }
+      },
+      "UserProfileResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/definitions/User"
+          }
+        }
+      },
+
+
+      "ClientErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+
+      "ServerErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      }
+      
+
+      }
+
+    }
+  
+  
